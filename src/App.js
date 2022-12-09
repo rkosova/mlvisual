@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+// import logo from './logo.svg';
+// import './App.css';
 
-function App() {
+class DataPoint {
+  constructor (x ,y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+/***
+ * Gets two dimensional distance between two initialized DataPoint objects.
+ */
+const getDistance = (a, b) => {
+  return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y)**2)
+}
+
+// const userInput = () => {
+
+// }
+
+const App = () => {
+  var dataPoints = [new DataPoint(12, 3), new DataPoint(13, 4)]
+  console.log(getDistance(dataPoints[0], dataPoints[1]))
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    </>
   );
 }
+
 
 export default App;
