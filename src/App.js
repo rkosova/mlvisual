@@ -1,5 +1,7 @@
 // import logo from './logo.svg';
-// import './App.css';
+import './App.css';
+
+import { Data, VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
 
 class DataPoint {
   #x;
@@ -12,6 +14,19 @@ class DataPoint {
     this.classValue = classValue;
   }
 
+  static pointsToObjects = (dataPoints = []) => {
+    var objects = [];
+
+    dataPoints.forEach(e => {
+      objects.push({
+        x: e.getX(),
+        y: e.getY()
+      });
+    })
+
+    return objects;
+  }
+
   setClass = (classValue) => {
     this.classValue = classValue;
   }
@@ -19,6 +34,24 @@ class DataPoint {
   getClass = () => {
     return this.classValue;
   }
+
+  setX = (x) => {
+    this.x = x;
+  }
+
+  getX = () => {
+    return this.x;
+  }
+
+  setY = (y) => {
+    this.y = y;
+  }
+
+  getY = () => {
+    return this.y;
+  }
+
+  // static method that returns array of objects with x and y values created by passing an array of DataPoints
 }
 
 /***
@@ -103,15 +136,30 @@ const classify = (KNeighbours) => {
 // }
 
 const App = () => {
+  var data = [new DataPoint(1, 4, "A"), new DataPoint(5, 7, "C"), new DataPoint(1, 1, "A"), new DataPoint(3, 5, "B")];
+
   var KNeighbours = getKNeighbours(new DataPoint(0, 0, null), 
-                                   [new DataPoint(1, 4, "A"), new DataPoint(302, 343, "C"), new DataPoint(1, 1, "A"), new DataPoint(3, 5, "B")],
+                                   [new DataPoint(1, 4, "A"), new DataPoint(5, 7, "C"), new DataPoint(1, 1, "A"), new DataPoint(3, 5, "B")],
                                    3);
 
-
-  console.log(classify(KNeighbours))
+  var dpAsOb = DataPoint.pointsToObjects(data);
   
   return (
     <>
+      <div className = "graph">
+        <VictoryChart
+          theme={VictoryTheme.material}
+          domain={{ x: [0, 5], y: [0, 7] }}
+        >
+          <VictoryScatter
+            style={{ data: { fill: "#c43a31" } }}
+            size={7}
+            data={dpAsOb}
+            x = "x"
+            y = "y"
+          />
+        </VictoryChart>  
+      </div>
     </>
   );
 }
