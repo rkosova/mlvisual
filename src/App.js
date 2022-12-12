@@ -1,8 +1,8 @@
 // import logo from './logo.svg';
 import './App.css';
 
-import { Data, VictoryChart, VictoryLabel, VictoryScatter, VictoryTheme } from 'victory';
-import { useId, useState } from 'react';
+import { Data, VictoryAxis, VictoryChart, VictoryContainer, VictoryGroup, VictoryLabel, VictoryLine, VictoryScatter, VictoryTheme } from 'victory';
+import React, { useId, useState } from 'react';
 
 class DataPoint {
   #x;
@@ -69,7 +69,8 @@ const getKNeighbours = (unclassifiedPoint, classifiedPoints, k) => {
   /**
    * Issues
    * 
-   * Will overwrite points with same distance. Solution is to reverse key-value pair and rewrite sorting alg.
+   * - Will overwrite points with same distance. Solution is to reverse key-value pair and rewrite sorting alg.
+   * - Not accurate always e.g.: x=3 y=6 (wrong class), x=3 y=7 (wrong neighbours) 
    */
   var distancePointPair = new Map();
 
@@ -148,9 +149,7 @@ const UserInput = (props) => {
     const name = event.target.name;
     const value = Number(event.target.value);
     props.setInp((values) => ({...values, [name]: value}))
-    console.log(props.inp);
   }
-
 
   return (
     <form>
@@ -174,6 +173,41 @@ const UserInput = (props) => {
   );
 }
 
+
+const NeighbourLines = ({kNasOb, k, inp, ...other}) => {
+  var lines = []
+  
+  if (kNasOb != undefined && kNasOb.length != 0){
+    for(let i = 0; i < k; i++) {
+      lines.push(
+        <VictoryLine
+          style={{
+            data: {
+              stroke: "#e1e2e3",
+              strokeWidth: 1.3
+            }
+          }}
+          data={[
+            inp,
+            kNasOb[i]
+          ]}
+          key={i}
+        /> 
+      );
+    }
+  }
+
+
+ //  other passes everything VictoryChart needs to identify and render its children
+  return (
+    <VictoryGroup
+    {...other}> 
+      { lines }
+    </VictoryGroup>
+    );
+}
+
+
 const App = () => {
   const [inp, setInp] = useState({});
 
@@ -186,11 +220,15 @@ const App = () => {
       data,
       3
     );
+    console.log(KNeighbours.map(e => e.getClass()));
     unc.setClass(classify(KNeighbours))
+    var kNasOb = DataPoint.pointsToObjects(KNeighbours);
+    console.log(kNasOb);
     data.push(unc); 
   }
 
   var dpAsOb = DataPoint.pointsToObjects(data);
+
 
   return (
     <>
@@ -199,19 +237,40 @@ const App = () => {
           theme={VictoryTheme.material}
           domain={{ x: [0, 5], y: [0, 7] }}
         >
+          <VictoryAxis 
+            dependentAxis
+            style={{
+              grid: { stroke: "none" }
+            }}
+          />
+          <VictoryAxis 
+            independentAxis
+            style={{
+              grid: { stroke: "none" }
+            }}
+          />
+
+          <NeighbourLines
+            k={ 3 }
+            inp={ inp }
+            kNasOb={ kNasOb }
+         />
+
           <VictoryScatter
-            style={{ data: { fill: "#c43a31" }, labels: { fill: "white", fontSize: 12 } }}
-            size={7}
-            data={dpAsOb}
-            labels={({ datum }) => datum.c}
-            labelComponent={<VictoryLabel dy={5}/>}
+            style={{ data: { fill: "#c43a31" }, labels: { fill: "white", fontSize: 12 }, grid: { stroke: "none" } }}
+            size={ 7 }
+            data={ dpAsOb }
+            labels={ ({ datum }) => datum.c }
+            labelComponent={ <VictoryLabel dy={5}/> }
             x = "x"
             y = "y"
           />
         </VictoryChart>  
+
         <UserInput 
           inp={ inp }
-          setInp={ setInp }/>
+          setInp={ setInp }
+        />
       </div>
     </>
   );
