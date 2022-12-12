@@ -107,8 +107,8 @@ const classify = (KNeighbours) => {
   /**
    * Issues:
    * 
-   * When there's no one numerically dominating class, it will pick the last one it encounters even if it isn't the closest.
-   * A possible solution is to choose the class closest to it.
+   * When there's no one numerically dominating class, it will pick the first one it encounters even if it isn't the closest.
+   * A possible solution: when highest count is 1, return closest class.
    */
   var classes = [];
 
@@ -200,7 +200,7 @@ const App = () => {
           domain={{ x: [0, 5], y: [0, 7] }}
         >
           <VictoryScatter
-            style={{ data: { fill: "#c43a31" }, labels: { fill: "black", fontSize: 12 } }}
+            style={{ data: { fill: "#c43a31" }, labels: { fill: "white", fontSize: 12 } }}
             size={7}
             data={dpAsOb}
             labels={({ datum }) => datum.c}
