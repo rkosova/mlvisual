@@ -1,7 +1,8 @@
 // import logo from './logo.svg';
 import './App.css';
 
-import { Data, VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
+import { Data, VictoryChart, VictoryLabel, VictoryScatter, VictoryTheme } from 'victory';
+import { useId, useState } from 'react';
 
 class DataPoint {
   #x;
@@ -20,7 +21,8 @@ class DataPoint {
     dataPoints.forEach(e => {
       objects.push({
         x: e.getX(),
-        y: e.getY()
+        y: e.getY(),
+        c: e.getClass()
       });
     })
 
@@ -61,12 +63,13 @@ const getDistance = (a, b) => {
   return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y)**2);
 }
 
+
 const getKNeighbours = (unclassifiedPoint, classifiedPoints, k) => {
   
   /**
    * Issues
    * 
-   * Will overwrite points with same distance. Possible solution is to split into two arrays or key value pair reversed
+   * Will overwrite points with same distance. Solution is to reverse key-value pair and rewrite sorting alg.
    */
   var distancePointPair = new Map();
 
@@ -100,6 +103,13 @@ const getKNeighbours = (unclassifiedPoint, classifiedPoints, k) => {
 
 
 const classify = (KNeighbours) => {
+
+  /**
+   * Issues:
+   * 
+   * When there's no one numerically dominating class, it will pick the last one it encounters even if it isn't the closest.
+   * A possible solution is to choose the class closest to it.
+   */
   var classes = [];
 
   for (let i = 0; i < KNeighbours.length; i++) {
@@ -128,22 +138,60 @@ const classify = (KNeighbours) => {
   }
 
 
-  return currentMostRepeatingClass;
+  return currentMostRepeatingClass; 
 }
 
-// const userInput = () => {
 
-// }
+const UserInput = (props) => {
+
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value = Number(event.target.value);
+    props.setInp((values) => ({...values, [name]: value}))
+    console.log(props.inp);
+  }
+
+
+  return (
+    <form>
+      <label> x:
+        <input
+          type='number'
+          name='x'
+          value={props.inp.x || ""}
+          onChange = {handleChange}
+        />
+      </label>
+      <label> y:
+        <input
+          type='number'
+          name='y'
+          value={props.inp.y || ""}
+          onChange = {handleChange} 
+        />
+      </label>
+    </form>
+  );
+}
 
 const App = () => {
+  const [inp, setInp] = useState({});
+
   var data = [new DataPoint(1, 4, "A"), new DataPoint(5, 7, "C"), new DataPoint(1, 1, "A"), new DataPoint(3, 5, "B")];
 
-  var KNeighbours = getKNeighbours(new DataPoint(0, 0, null), 
-                                   [new DataPoint(1, 4, "A"), new DataPoint(5, 7, "C"), new DataPoint(1, 1, "A"), new DataPoint(3, 5, "B")],
-                                   3);
+  if (inp.x != undefined && inp.y != undefined) {
+    const unc = new DataPoint((inp.x), (inp.y), null)
+    var KNeighbours = getKNeighbours(
+      unc, 
+      data,
+      3
+    );
+    unc.setClass(classify(KNeighbours))
+    data.push(unc); 
+  }
 
   var dpAsOb = DataPoint.pointsToObjects(data);
-  
+
   return (
     <>
       <div className = "graph">
@@ -152,17 +200,23 @@ const App = () => {
           domain={{ x: [0, 5], y: [0, 7] }}
         >
           <VictoryScatter
-            style={{ data: { fill: "#c43a31" } }}
+            style={{ data: { fill: "#c43a31" }, labels: { fill: "black", fontSize: 12 } }}
             size={7}
             data={dpAsOb}
+            labels={({ datum }) => datum.c}
+            labelComponent={<VictoryLabel dy={5}/>}
             x = "x"
             y = "y"
           />
         </VictoryChart>  
+        <UserInput 
+          inp={ inp }
+          setInp={ setInp }/>
       </div>
     </>
   );
 }
 
-
+// plan is to have a hard coded spread of points with set classes and then let user place points as they please and see how the algorithm reacts
+// spiral the color wheel? to distinguish classes. could be fun alg. to write
 export default App;
