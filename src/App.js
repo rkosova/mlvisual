@@ -203,7 +203,26 @@ const NeighbourLines = ({kNasOb, k, inp, ...other}) => {
 const App = () => {
   const [inp, setInp] = useState({});
 
-  var data = [new DataPoint(1, 4, "A"), new DataPoint(5, 7, "C"), new DataPoint(1, 1, "A"), new DataPoint(3, 5, "B")];
+  var data = [
+    // A
+    new DataPoint(1, 4, "A"),
+    new DataPoint(1, 1, "A"), 
+    new DataPoint(-2, 1, "A"), 
+    new DataPoint(3, 2, "A"), 
+    new DataPoint(1, -1, "A"), 
+    new DataPoint(-2, -1, "A"),
+    //B 
+    new DataPoint(3, 5, "B"),
+    new DataPoint(5, 7, "B"),
+    new DataPoint(4, 8, "B"),
+    new DataPoint(5, 6, "B"),
+    new DataPoint(2, 6, "B"),
+    new DataPoint(4, 4, "B"),
+    new DataPoint(7, 1, "B"),
+    new DataPoint(3, 4, "B"),
+    //C
+    new DataPoint(-5, 5, "C"),  
+    ];
 
   if (inp.x != undefined && inp.y != undefined) {
     const unc = new DataPoint((inp.x), (inp.y), null)
@@ -227,7 +246,7 @@ const App = () => {
       <div className = "graph">
         <VictoryChart
           theme={VictoryTheme.material}
-          domain={{ x: [0, 5], y: [0, 7] }}
+          domain={{ x: [-7, 7], y: [-8, 8] }}
         >
           <VictoryAxis 
             dependentAxis
@@ -253,7 +272,7 @@ const App = () => {
             size={ 7 }
             data={ dpAsOb }
             labels={ ({ datum }) => datum.c }
-            labelComponent={ <VictoryLabel dy={5}/> }
+            labelComponent={ <VictoryLabel dy={ ({ datum }) => datum.y >= 0 ? 5 : -5 }/> }
             x = "x"
             y = "y"
           />
