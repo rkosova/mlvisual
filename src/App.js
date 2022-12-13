@@ -66,36 +66,28 @@ const getDistance = (a, b) => {
 
 const getKNeighbours = (unclassifiedPoint, classifiedPoints, k) => {
   
-  /**
-   * Issues
-   * 
-   * - Will overwrite points with same distance. Solution is to reverse key-value pair and rewrite sorting alg.
-   * - Not accurate always e.g.: x=3 y=6 (wrong class), x=3 y=7 (wrong neighbours) 
-   */
-  var distancePointPair = new Map();
+  var distancePointPair = [];
 
   for (let i = 0; i < classifiedPoints.length; i++) {
-    distancePointPair.set(getDistance(unclassifiedPoint, classifiedPoints[i]), classifiedPoints[i]);
-  }
-
-  var distances = Array.from(distancePointPair.keys());
-
-  for (let i = 0; i < distances.length - 1; i++) {
-    let current = distances[i];
-    for (let j = i + 1; j < distances.length; j++) {
-      if (current > distances[j]) {
-        let temp = distances[j];
-        distances[j] = current;
-        distances[i] = temp;
-        break;
+    distancePointPair.push(
+      {
+        point: classifiedPoints[i],
+        distance: getDistance(unclassifiedPoint, classifiedPoints[i])
       }
-    }
+    );
   }
+
+  distancePointPair.sort(
+    (a, b) => {
+      return a.distance - b.distance // ascending order  
+    }
+  )
+
 
   var KNeighbours = [];
 
   for (let i = 0; i < k; i++) {
-    KNeighbours[i] = distancePointPair.get(distances[i]);
+    KNeighbours[i] = distancePointPair[i];
   }
 
   return KNeighbours;
@@ -105,16 +97,10 @@ const getKNeighbours = (unclassifiedPoint, classifiedPoints, k) => {
 
 const classify = (KNeighbours) => {
 
-  /**
-   * Issues:
-   * 
-   * When there's no one numerically dominating class, it will pick the first one it encounters even if it isn't the closest.
-   * A possible solution: when highest count is 1, return closest class.
-   */
   var classes = [];
 
   for (let i = 0; i < KNeighbours.length; i++) {
-    classes[i] = KNeighbours[i].getClass();
+    classes[i] = KNeighbours[i].point.getClass();
   }
 
   var uniqueClasses = [...new Set(classes)] // not too demanding considering k is usually a small value. may be useless
@@ -133,11 +119,15 @@ const classify = (KNeighbours) => {
   var currentMostRepeatingClass = uniqueClasses[0];
 
   for (let i = 1; i < uniqueClasses.length; i++) {
-    if (uClassesCount.get(currentMostRepeatingClass) < uClassesCount.get[uniqueClasses[i]]) {
+    if (uClassesCount.get(currentMostRepeatingClass) < uClassesCount.get(uniqueClasses[i])) {
       currentMostRepeatingClass = uniqueClasses[i];
     }
   }
 
+
+  if (uClassesCount.get(currentMostRepeatingClass) === 1) {
+    return KNeighbours[0].point.getClass();
+  }
 
   return currentMostRepeatingClass; 
 }
@@ -220,10 +210,9 @@ const App = () => {
       data,
       3
     );
-    console.log(KNeighbours.map(e => e.getClass()));
     unc.setClass(classify(KNeighbours))
-    var kNasOb = DataPoint.pointsToObjects(KNeighbours);
-    console.log(kNasOb);
+    var kNDataPoints = KNeighbours.map(a => a.point);
+    var kNasOb = DataPoint.pointsToObjects(kNDataPoints);
     data.push(unc); 
   }
 
