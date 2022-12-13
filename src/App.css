@@ -2,14 +2,21 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.header {
+  background-color: antiquewhite;
+  padding: 2em;
+  text-align: center;
 }
 
 .graph {
   height: 50em;
   width: 50em;
+  margin: 0 auto;
 }
 
-
+.footer {
+  margin-top: 3em;
+  background-color: antiquewhite;
+  padding: 4em;
+  text-align: center;
+}

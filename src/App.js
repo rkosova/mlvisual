@@ -3,6 +3,8 @@ import './App.css';
 
 import { Data, VictoryAxis, VictoryChart, VictoryContainer, VictoryGroup, VictoryLabel, VictoryLine, VictoryScatter, VictoryTheme } from 'victory';
 import React, { useId, useState } from 'react';
+import Header from './Header';
+import Footer from './Footer';
 
 class DataPoint {
   #x;
@@ -221,6 +223,7 @@ const App = () => {
 
   return (
     <>
+      <Header />
       <div className = "graph">
         <VictoryChart
           theme={VictoryTheme.material}
@@ -261,6 +264,7 @@ const App = () => {
           setInp={ setInp }
         />
       </div>
+      <Footer />
     </>
   );
 }
