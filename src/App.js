@@ -144,24 +144,30 @@ const UserInput = (props) => {
   }
 
   return (
-    <form id="var-in">
+    <form className="var-in">
       <label> x:
-        <input
-          type='number'
-          name='x'
-          value={props.inp.x || ""}
-          onChange = {handleChange}
-          className="num-in"
-        />
+        <div className='xin'>
+          <input
+            type='number'
+            name='x'
+            value={props.inp.x || ""}
+            onChange = {handleChange}
+            className="num-in"
+          />
+          <span className='underline'></span>
+        </div>
       </label>
       <label> y:
-        <input
-          type='number'
-          name='y'
-          value={props.inp.y || ""}
-          onChange = {handleChange} 
-          className="num-in"
-        />
+        <div className='yin'>
+          <input
+            type='number'
+            name='y'
+            value={props.inp.y || ""}
+            onChange = {handleChange} 
+            className="num-in"
+          />
+          <span className='underline'></span>
+        </div>
       </label>
     </form>
   );
@@ -255,45 +261,70 @@ const App = () => {
   return (
     <>
       <Header />
-      <div className = "graph">
-        <VictoryChart
-          theme={VictoryTheme.material}
-          domain={{ x: [-7, 7], y: [-8, 8] }}
-        >
-          <VictoryAxis 
-            dependentAxis
-            style={{
-              grid: { stroke: "none" }
-            }}
-          />
-          <VictoryAxis 
-            independentAxis
-            style={{
-              grid: { stroke: "none" }
-            }}
-          />
+      <div className='main'>
+        <div className='container'>
+          <div className='exp'>
+            <h1>k-NN: K Nearest Neighbours (Classification)</h1>
+            <p>
+              A simple, <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised</a> machine learning algorithm.
+              It classifies a data point using its <b>nearest k</b> number of <b>neighbours</b>.
+            </p>
 
-          <NeighbourLines
-            k={ 3 }
-            inp={ inp }
-            kNasOb={ kNasOb }
-         />
+          </div>
 
-          <VictoryScatter
-            style={{ data: { fill: ({datum}) => datum.x === inp.x && datum.y === inp.y ? "#40C9A2" : "#F26157"}, labels: { fill: "white", fontSize: 10, fontFamily:  'Martian Mono'}, grid: { stroke: "none" } }}
-            size={ 7 }
-            data={ dpAsOb }
-            labels={ ({ datum }) => datum.c }
-            labelComponent={ <VictoryLabel dy={ ({ datum }) => datum.y >= 0 ? 5 : -5 }/> }
-            x = "x"
-            y = "y"
-          />
-        </VictoryChart>  
-
-        <UserInput 
+          <UserInput 
+          className="userin"
           inp={ inp }
           setInp={ setInp }
-        />
+          />
+        </div>
+
+        <div className = "graph">
+
+          <VictoryChart
+            theme={VictoryTheme.material}
+            domain={{
+              x: [-7, 7],
+              y: [-8, 8] 
+            }}
+          >
+            <VictoryAxis 
+              dependentAxis
+              style={{
+                grid: { stroke: "none" },
+              }}
+            />
+            <VictoryAxis 
+              independentAxis
+              style={{
+                grid: { stroke: "none" },
+              }}
+            />
+
+            <NeighbourLines
+              k={ 3 }
+              inp={ inp }
+              kNasOb={ kNasOb }
+          />
+
+            <VictoryScatter
+              style={{
+                data: { fill: ({datum}) => datum.x === inp.x && datum.y === inp.y ? "#40C9A2" : "#F26157"}, 
+                labels: { fill: "white", fontSize: 10, fontFamily:  'Martian Mono'}, 
+                grid: { stroke: "none" } }}
+              size={ 7 }
+              data={ dpAsOb }
+              labels={ ({ datum }) => datum.c }
+              labelComponent={ <VictoryLabel dy={
+                                ({ datum }) => datum.y >= 0 ? 5 : -5 }
+                                /> 
+                              }
+              x = "x"
+              y = "y"
+            />
+          </VictoryChart>  
+        </div>
+
       </div>
       <Footer />
     </>
