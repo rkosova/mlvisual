@@ -1,9 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Martian+Mono:wght@200&display=swap');
+
 .App {
   text-align: center;
 }
 
 .header {
-  background-color: antiquewhite;
+  font-family: 'Martian Mono', monospace;
+  color: #F7DBA7;
+  background-color: #1E2D2F;
   padding: 2em;
   text-align: center;
 }
@@ -14,9 +18,23 @@
   margin: 0 auto;
 }
 
+#var-in {
+  margin-left: 30%; 
+}
+
+.num-in, label{
+  font-family: 'Martian Mono', monospace;
+  font-size: medium;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  width: 3em;
+}
+
 .footer {
   margin-top: 3em;
-  background-color: antiquewhite;
+  color: #F7DBA7;
+  background-color: #1E2D2F;
   padding: 4em;
   text-align: center;
 }

@@ -144,13 +144,14 @@ const UserInput = (props) => {
   }
 
   return (
-    <form>
+    <form id="var-in">
       <label> x:
         <input
           type='number'
           name='x'
           value={props.inp.x || ""}
           onChange = {handleChange}
+          className="num-in"
         />
       </label>
       <label> y:
@@ -159,6 +160,7 @@ const UserInput = (props) => {
           name='y'
           value={props.inp.y || ""}
           onChange = {handleChange} 
+          className="num-in"
         />
       </label>
     </form>
@@ -175,7 +177,7 @@ const NeighbourLines = ({kNasOb, k, inp, ...other}) => {
         <VictoryLine
           style={{
             data: {
-              stroke: "#e1e2e3",
+              stroke: "#041F1E",
               strokeWidth: 1.3
             }
           }}
@@ -205,23 +207,32 @@ const App = () => {
 
   var data = [
     // A
-    new DataPoint(1, 4, "A"),
-    new DataPoint(1, 1, "A"), 
-    new DataPoint(-2, 1, "A"), 
-    new DataPoint(3, 2, "A"), 
-    new DataPoint(1, -1, "A"), 
-    new DataPoint(-2, -1, "A"),
+    new DataPoint(1, 4, "A"), //A1
+    new DataPoint(1, 1, "A"), //A2
+    new DataPoint(-2, 1, "A"), //A3
+    new DataPoint(3, 2, "A"), //A4
+    new DataPoint(1, -1, "A"), //A5
+    new DataPoint(-2, -1, "A"), //A6
+    new DataPoint(0, 2, "A"), //A7
+    new DataPoint(0, 0, "A"), //A8
+    new DataPoint(-1, -0.3, "A"), //A9
+    new DataPoint(2.5, 1.2, "A"), //A10
     //B 
-    new DataPoint(3, 5, "B"),
-    new DataPoint(5, 7, "B"),
-    new DataPoint(4, 8, "B"),
-    new DataPoint(5, 6, "B"),
-    new DataPoint(2, 6, "B"),
-    new DataPoint(4, 4, "B"),
-    new DataPoint(7, 1, "B"),
-    new DataPoint(3, 4, "B"),
+    new DataPoint(3, 5, "B"), //B1
+    new DataPoint(5, 7, "B"), //B2
+    new DataPoint(4, 8, "B"), //B3
+    new DataPoint(5, 6, "B"), //B4
+    new DataPoint(2, 6, "B"), //B5
+    new DataPoint(4, 4, "B"), //B6
+    new DataPoint(7, 1, "B"), //B7
+    new DataPoint(3, 4, "B"), //B8
     //C
-    new DataPoint(-5, 5, "C"),  
+    new DataPoint(-5, 5, "C"), //C1
+    new DataPoint(-2, 3, "C"), //C2
+    new DataPoint(-4, 2, "C"), //C3
+    new DataPoint(-3.2, 3.5, "C"), //C4
+    new DataPoint(-3.5, 4.2, "C"), //C5
+    new DataPoint(-1.5, 4.4, "C") //C6 
     ];
 
   if (inp.x != undefined && inp.y != undefined) {
@@ -234,7 +245,8 @@ const App = () => {
     unc.setClass(classify(KNeighbours))
     var kNDataPoints = KNeighbours.map(a => a.point);
     var kNasOb = DataPoint.pointsToObjects(kNDataPoints);
-    data.push(unc); 
+    data.push(unc); // with every state change, data is reset and thus anything we push is removed allowing for dynamic movement
+                    // of the example point
   }
 
   var dpAsOb = DataPoint.pointsToObjects(data);
@@ -268,7 +280,7 @@ const App = () => {
          />
 
           <VictoryScatter
-            style={{ data: { fill: "#c43a31" }, labels: { fill: "white", fontSize: 12 }, grid: { stroke: "none" } }}
+            style={{ data: { fill: ({datum}) => datum.x === inp.x && datum.y === inp.y ? "#40C9A2" : "#F26157"}, labels: { fill: "white", fontSize: 10, fontFamily:  'Martian Mono'}, grid: { stroke: "none" } }}
             size={ 7 }
             data={ dpAsOb }
             labels={ ({ datum }) => datum.c }
