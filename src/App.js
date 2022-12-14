@@ -1,8 +1,8 @@
 // import logo from './logo.svg';
 import './App.css';
 
-import { Data, VictoryAxis, VictoryChart, VictoryContainer, VictoryGroup, VictoryLabel, VictoryLine, VictoryScatter, VictoryTheme } from 'victory';
-import React, { useId, useState } from 'react';
+import { VictoryAxis, VictoryChart, VictoryGroup, VictoryLabel, VictoryLine, VictoryScatter, VictoryTheme } from 'victory';
+import React, { useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -177,7 +177,7 @@ const UserInput = (props) => {
 const NeighbourLines = ({kNasOb, k, inp, ...other}) => {
   var lines = []
   
-  if (kNasOb != undefined && kNasOb.length != 0){
+  if (kNasOb !== undefined && kNasOb.length !== 0){
     for(let i = 0; i < k; i++) {
       lines.push(
         <VictoryLine
@@ -241,7 +241,7 @@ const App = () => {
     new DataPoint(-1.5, 4.4, "C") //C6 
     ];
 
-  if (inp.x != undefined && inp.y != undefined) {
+  if (inp.x !== undefined && inp.y !== undefined) {
     const unc = new DataPoint((inp.x), (inp.y), null)
     var KNeighbours = getKNeighbours(
       unc, 
